@@ -41,7 +41,7 @@
                       </a>
                   </li>
                   <li data-slide="2" class="col-12 col-sm-2">
-                      <a id="menu-link-2" href="/#stat" title="Go To Statistic">
+                      <a id="menu-link-2" href="/#stat" title="Go To Information Tab">
                           <span class="icon icon-about"></span> <span class="text"> INFORMATION </span>
                       </a>
                   </li>
@@ -158,7 +158,7 @@
 					<div class="buttons form-group">
 						<label class="col-md-4 control-label" for="button1id"></label>
 						<div class="col-md-8">
-                            <span style="color: rgb(255, 242, 0);">Pressing Upload button mean that you agreed with our <a href="#terms">Terms</a></span>
+                            <span style="color: rgb(255, 242, 0);">Pressing Upload button mean that you agreed with our <a href="#stat">Terms</a></span>
                             <br /><br />
                             <button type="submit" id="button1id" name="button1id" class="btn btn-success" >Upload</button>
 							<button type="reset" id="button2id" name="button2id" class="btn btn-warning" >Clear</button>
