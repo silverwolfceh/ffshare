@@ -1,0 +1,1 @@
+sudo iptables -I INPUT 1 -p tcp --destination-port 80 -s $1 -j DROP

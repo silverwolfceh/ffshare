@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^0.sec/([0-9]+)/(.+)$ download.php?base=$1&file=$2 [L]
+RewriteRule ^0.sec$ process.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+</IfModule>
+ErrorDocument 404 /notfound.html

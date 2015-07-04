@@ -1,0 +1,26 @@
+# Each 1 minute
+#* * * * * root /var/www/html/delete.sh 1
+# Each 5 minutes
+#*/5 * * * * root /var/www/html/delete.sh 2
+# Each 1 hour
+0 * * * * * root /var/www/html/delete.sh 3
+# Each 5 hours
+0 */5 * * * root /var/www/html/delete.sh 4
+# Each 12 hours
+0 */12 * * * root /var/www/html/delete.sh 5
+# Each 1 day
+0 0 * * * root /var/www/html/delete.sh 6
+# Each 5th day
+0 0 */5 * * root /var/www/html/delete.sh 7
+# Each 10th day
+0 0 */10 * * root /var/www/html/delete.sh 7
+# Each 15th day
+0 0 */15 * * root /var/www/html/delete.sh 7
+# Each 20th day
+0 0 */20 * * root /var/www/html/delete.sh 7
+# Each 25th day
+0 0 */25 * * root /var/www/html/delete.sh 7
+# Each 30th day
+0 0 */30 * * root /var/www/html/delete.sh 7
+# Each 30 days
+0 0 0 * * root /var/www/html/delete.sh 8
