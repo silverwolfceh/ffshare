@@ -70,6 +70,7 @@
 				if($file['size'] > $GLOBALS['max_file_size'])
 				{
 					$data = array('error'=> 'Maximum allowed is '.ts($GLOBALS['max_file_size']));
+					error_log("Larger than max size");
 					echo json_encode($data);
 					return;
 				}
@@ -93,6 +94,7 @@
 				}
 				else
 				{
+					error_log("Failed to move file ".$file['tmp_name']." to ".$uploaddir.$randomname);
 					$error = true;
 				}
 			}
@@ -108,7 +110,7 @@
 			$sid = $_POST['sid'];
 			session_id($sid);
 			$randomnum = rand(0,1000000);
-			while(($randomnum % 9)  != $_SESSION['dirid'])
+			while(($randomnum % $GLOBAL['numdir'])  != $_SESSION['dirid'])
 				$randomnum = rand(0,1000000);
 			$filepath = $GLOBALS['server_url']."/download.php?base=".$randomnum."&file=".$_POST["filenames"];
 			if($GLOBALS['friendly_url'])
@@ -119,5 +121,5 @@
 			break;
 		}
 	}
-	
+
 ?>

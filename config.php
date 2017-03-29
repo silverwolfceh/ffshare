@@ -1,10 +1,11 @@
 <?php
-	
+
 	$server_name = "FFShare.Net";
 	$friendly_url = true;
-	$server_url = "http://ffshare.net";
-	$datadir = array("1" => "1min", "2" => "5mins", "3" => "1hour", "4" => "5hours", "5" => "12hours", "6" => "1day", "7" => "5days", "8" => "30days");
-	$uploaddir = '/var/www/data/uploads';
+	$server_url = "http://104.199.214.218";
+	$datadir = array("1" => "1min", "2" => "5mins", "3" => "1hour", "4" => "5hours", "5" => "12hours", "6" => "1day", "7" => "5days", "8" => "30days", "9" => "forever");
+	$numdir = count($datadir);
+	$uploaddir = '/usr/share/uploads/';
 	$visistor = "log/visitor.txt";
 	$fileserved = "log/fileserved.txt";
 	$banip = "log/bannedip.txt";
@@ -13,5 +14,5 @@
 		$server_url = "http://fastshare.com";
 		$uploaddir = 'D:\\Dropbox\\Dropbox\\PHP\\www\\FastShare\\uploads';
 		$max_file_size = 1048576000; //1000MB
-	}	
+	}
 ?>

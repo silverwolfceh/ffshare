@@ -94,6 +94,7 @@
 								<option value="6">1 day</option>
 								<option value="7">5 days</option>
 								<option value="8">30 days</option>
+								<option value="9">Forever</option>
 							</select>
 						</div>
 					</div>
