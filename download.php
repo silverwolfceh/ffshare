@@ -58,7 +58,7 @@
 		header('Pragma: public');
 		header('Content-Length: ' . filesize($path));
 		ob_clean();
-        flush();
+           flush();
 		readfile($path);
 		exit;
 			

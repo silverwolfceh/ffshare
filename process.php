@@ -52,36 +52,14 @@
 				echo "FAILED";
 			break;
 		}
-		case "getuploadedpercent":
-		{
-			if(isset($_POST['UPLOAD_IDENTIFIER']))
-			{
-				$uuid = $_POST['UPLOAD_IDENTIFIER'];
-				$status = uploadprogress_get_info($uuid );
-				if ($status)
-					echo round($status['bytes_uploaded']/$status['bytes_total']*100);
-				else
-					echo 100;
-			}
-			else
-				echo "000";
-			break;
-		}
 		case "uploadfile":
 		{
 			require_once("config.php");
 			require_once("script.php");
 			$livetime = $_POST['live-time'];
-			$captcha = $_POST['captcha-res'];
 			$sid = $_POST['sid'];
 			$password = $_POST['password'];
 			session_id($sid);
-//			if($captcha != $_SESSION["captcha-answer"])
-//			{
-//				$data = array('error' => 'Captcha wrong');
-//				echo json_encode($data);
-//				return;
-//			}
 			$error = false;
 			$files = array();
 			$_SESSION['dirid'] =$livetime;
@@ -95,13 +73,20 @@
 					echo json_encode($data);
 					return;
 				}
-				if(move_uploaded_file($file['tmp_name'], $uploaddir .vn_str_filter(basename($file['name']))))
+				$randomname = vn_str_filter(basename($file['name']));
+				while(file_exists($uploaddir.$randomname))
+				{
+					$ext = pathinfo($randomname, PATHINFO_EXTENSION);
+					$bname = pathinfo($randomname, PATHINFO_FILENAME);
+					$randomname = $bname."_".rand(1,1000).".".$ext;
+				}
+				if(move_uploaded_file($file['tmp_name'], $uploaddir . $randomname))
 				{
 					$debugmsg = $file['name'];
-					$files[] = vn_str_filter($file['name']);
+					$files[] = $randomname;
 					if($password != "")
 					{
-						$f = fopen($uploaddir.vn_str_filter(basename($file['name'])).".lock","w");
+						$f = fopen($uploaddir.$randomname.".lock","w");
 						fwrite($f,$password);
 						fclose($f);
 					}

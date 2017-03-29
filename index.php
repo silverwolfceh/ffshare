@@ -4,24 +4,21 @@
 	require_once("script.php");
 	if(checkBanIp($_SERVER["REMOTE_ADDR"]))
 		banIP();
-	$uuid = md5(uniqid(mt_rand()));
 ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="images/favicon.ico">
 
     <title><?php echo $GLOBALS['server_name']; ?> - Share your file in a Fast and Free ways</title>
-    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="js/jquery.lazyload.js"></script>
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="js/bootstrap.min.js"></script>
-    <link href="css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
-    <script src="js/bootstrap-dialog.min.js"></script>
 	<link href="css/custom.css" rel="stylesheet" type="text/css" />
 	<script src="js/custom.js"></script>
   </head>
@@ -45,21 +42,11 @@
                           <span class="icon icon-about"></span> <span class="text"> INFORMATION </span>
                       </a>
                   </li>
-                 <!--  <li data-slide="4" class="col-12 col-sm-2">
-                      <a id="menu-link-3" href="/#terms" title="Go To Terms and Agreements">
-                          <span class="icon icon-about"></span> <span class="text"> TERMS</span>
-                      </a>
-                  </li> -->
-<!--                  <li data-slide="5" class="col-12 col-sm-2">-->
-<!--                      <a id="menu-link-4" href="/#slide-5" title="Next Section">-->
-<!--                          <span class="icon icon-about"></span> <span class="text"> PROJECT</span>-->
-<!--                      </a>-->
-<!--                  </li>-->
-                  <li data-slide="6" class="col-12 col-sm-2">
+                  <!-- <li data-slide="6" class="col-12 col-sm-2">
                       <a id="menu-link-6" href="/#contact" title="Send me some messages">
                           <span class="icon icon-contact"></span><span class="text"> CONTACT ME </span>
                       </a>
-                  </li>
+                  </li> -->
 
               </ul>
               <div class="row">
@@ -67,21 +54,21 @@
               </div>
           </div><!-- /.nav-collapse -->
       </div><!-- /.navibar -->
-<div class="container-full" id="home">
+<div class="container-full lazy" id="home" data-original="../images/wall2.jpg" style="background: url(../images/black.jpg) no-repeat center center fixed; width: 100%; height:100%; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; ">
 
 
 
 
       <div class="row">
         <div class="col-lg-12 text-center v-center slide story" >
-			<h1>Upload a File</h1>
-			<p class="lead">And share it in fast and free way</p>
+			<h1 style="color:white">Upload a File</h1>
+			<p class="lead" style="color:white">And share it in fast and free way</p>
+
+      <!-- Infomation about upload -->
 			<p class="error" id="errormsg"></p>
-			<div id="bar_blank" style="display:none">
 			
-				<div id="bar_color"></div>
-			</div>
-			<!--<iframe id="upload-frame" name="upload-frame" width=0 height=0></iframe>-->
+
+      <!-- Upload form -->
 			<form class="form-horizontal" method="post" enctype="multipart/form-data" action="" id="uploadform" >
 				<fieldset>
 
@@ -89,8 +76,6 @@
 					<div class="form-group">
 						<label class="col-md-4 control-label" for="filebutton">Choose a file</label>
 						<div class="col-md-4">
-							<input type="hidden" id="UPLOAD_IDENTIFIER"  name="UPLOAD_IDENTIFIER"  value="<?php echo $uuid; ?>" />
-							<input type="hidden" value="uploadform" name="PHP_SESSION_UPLOAD_PROGRESS" id="PHP_SESSION_UPLOAD_PROGRESS">
 							<input id="filebutton" name="filebutton" class="input-file" type="file" required="">
 							<input type="hidden" name="MAX_FILE_SIZE" id="MAX_FILE_SIZE" value="<?php echo $GLOBALS['max_file_size']; ?>" /> 
 						
@@ -102,27 +87,14 @@
 						<label class="col-md-4 control-label" for="livetime">Live time</label>
 						<div class="col-md-3">
 							<select id="livetime" name="livetime" class="form-control">
-								<!-- <option value="1">1 minutes</option>
-								<option value="2">5 minutes</option> -->
-								<option value="3">1 hour</option>
+                <option value="1">1 minute</option>
+								<option value="3" selected="true">1 hour</option>
 								<option value="4">5 hours</option>
 								<option value="5">12 hours</option>
 								<option value="6">1 day</option>
 								<option value="7">5 days</option>
 								<option value="8">30 days</option>
 							</select>
-						</div>
-					</div>
-		
-					<!-- Prepended text-->
-					<div class="form-group" style="display:none">
-						<label class="col-md-4 control-label" for="captcha-res">Enter captcha</label>
-						<div class="col-md-3">
-							<div class="input-group">
-								<span class="input-group-addon" id="captcha-code" onclick="loadCaptcha()">CLICK HERE</span>
-								<input id="captcha-res" name="captcha-res" class="form-control" placeholder="6" type="text"  onblur="checkCaptcha()">
-							</div>
-							<p class="help-block">Click the grey cell to get or change captcha.</p>
 						</div>
 					</div>
 					
@@ -133,25 +105,6 @@
 							<input id="password" name="password" type="password" class="form-control input-md" >
 						</div>
 						
-					</div>
-
-					<!-- Multiple Radios -->
-					<div class="form-group" style="display:none">
-						<label class="col-md-4 control-label" for="radios">Do you agree with our terms? </label>
-						<div class="terms col-md-4">
-							<div class="radio">
-								<label for="radios-0">
-									<input type="radio" name="radios" id="radios-0" value="1" checked="checked" required="">
-									I agreed
-								</label>
-							</div>
-							<div class="radio">
-								<label for="radios-1">
-									<input type="radio" name="radios" id="radios-1" value="2">
-									No, thanks.
-								</label>
-							</div>
-						</div>
 					</div>
 
 					<!-- Button (Double) -->
@@ -167,6 +120,10 @@
 					</div>
 					
 					<!-- Text input-->
+          <div id="uploadprogress" style="display:none">
+        <div id="upload_percent" style="margin-right:9%"><strong>0 %</strong></div>
+        <progress></progress>
+      </div>
 					<div class="form-group" style="display:none" id="download">
 						<label class="col-md-4 control-label" for="downloadlink">Download link</label>  
 						<div class="col-md-5">
@@ -199,7 +156,7 @@
     </div>
   	<br><br><br><br><br>
 </div> <!-- /container full -->
-<div class="container-full statistic" id="stat">
+<div class="container-full statistic lazy" data-original="../images/wall1.jpg" id="stat" style="background: url(../images/black.jpg) no-repeat center center fixed; width: 100%; height:100%; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; ">
 <!--  	<hr>-->
     <br />
     <br />
@@ -256,38 +213,7 @@
         </div>
     </div>
 </div>
-<!-- <div class="container-full terms" id="terms">
-
-    <br />
-    <br />
-    <div class="row" style="margin-left: 20%; margin-top: 5%">
-        <div class="col-md-8">
-            <div class="panel panel-default" style="margin: auto; background-color: transparent; border: 0px">
-                <div class="panel-heading" style="background-color: transparent; color: rgb(139, 255, 15);"><h3>TERMS AND AGREEMENTS</h3></div>
-                <div class="panel-body"  style="height:400px; color: rgb(240, 253, 36); ">
-                <b><i>
-                    If you upload something onto our Fast & Free file sharing server. You were agreed with our term and conditions: <br />
-                    1. The uploaded file are your responsible. We won't know and responsible for any DCMA or something related to rights on that file <br />
-                    2. We are not responsible for any loss of your data. This is only temporary server, any files will be deleted in a certain time. You can buy PRO version to have your files backed up forever <br />
-                    3. We reversed the right to LOCK your ip or provide your ip to the government if needed without prior notification <br />
-                    4. We reversed the right to DELETE your files if your file were detected to violate our TERMS and AGREEMENTS <br />
-                    5. We reversed the right to update this part without notification.
-                    </i></b>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <br><br>
-            <p class="pull-right" style="color:white">©Copyright 2015 <?php echo $GLOBALS['server_name']; ?><sup>TM</sup>.</p>
-            <br><br>
-        </div>
-    </div>
-</div> -->
-<div class="container-full contact" id="contact">
-<!--    <hr>-->
+<!-- <div class="container-full contact lazy" id="contact" data-original="../images/wall3.jpg" style="background: url(../images/black.jpg) no-repeat center center fixed; width: 100%; height:100%; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; ">
     <br />
     <br />
 
@@ -350,7 +276,7 @@
             <br><br>
         </div>
     </div>
-</div>
+</div> -->
 
 <script>
 <?php

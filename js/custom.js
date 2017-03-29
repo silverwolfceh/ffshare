@@ -58,7 +58,7 @@ function getUploadedPercent()
 	var uuid = $("#UPLOAD_IDENTIFIER").val()
 	var time = new Date().getTime();
 	$.post('0.sec',{'function': 'getuploadedpercent', 'sid': sid, 'UPLOAD_IDENTIFIER': uuid, "time": time },function(reponse) {
-			if (reponse <= 100) 
+			if (reponse != '100') 
 			{
 				//toggleError(false)
 				//document.getElementById("bar_color").style.width = reponse + "%";
@@ -74,94 +74,38 @@ function getUploadedPercent()
     });
 }
 
-function loadCaptcha()
-{
-	var sid = getCookie("PHPSESSID")
-	$.post('0.sec',{'function': 'getcaptcha', 'sid': sid },function(reponse) {
-				$("#captcha-code").html(reponse)
-                return;
-            });
-	
-}
-function menu_focus( element, i ) {
-    if ( $(element).hasClass('active') ) {
-        if ( i == 6 ) {
-            if ( $('.navbar').hasClass('inv') == false )
-                return;
-        } else {
-            return;
-        }
-    }
+function progressHandlingFunction(e){
+    if(e.lengthComputable){
+        $('progress').attr({value:e.loaded,max:e.total,});
+        var percent = Math.round( (e.loaded /  e.total) * 100);
 
-    enable_arrows( i );
-
-    if ( i == 1 || i == 6 )
-        $('.navbar').removeClass('inv');
-    else
-        $('.navbar').addClass('inv');
-
-    $('.nav > li').removeClass('active');
-    $(element).addClass('active');
-
-    var icon = $(element).find('.icon');
-
-    var left_pos = icon.offset().left - $('.nav').offset().left;
-    var el_width = icon.width() + $(element).find('.text').width() + 10;
-
-    $('.active-menu').stop(false, false).animate(
+        if(percent == 100)
         {
-            left: left_pos,
-            width: el_width
-        },
-        1500,
-        'easeInOutQuart'
-    );
+        	$('#upload_percent').html("<strong> Processing file...Please wait...</strong>");	
+        }
+        else
+        {
+        	$('#upload_percent').html("<strong>" + percent + " %</strong>");	
+        }
+        
+    }
 }
-function checkCaptcha()
-{
-	var sid = getCookie("PHPSESSID")
-	var res = $("#captcha-res").val();
-	$.post('0.sec',{'function': 'setcaptcha', 'sid': sid, 'res': res },function(reponse) {
-				if(reponse == "PASSED")
-				{
-					allowSubmitForm = true;
-					$("#captcha-res").css("border-color","blue")
-				}
-				else
-				{
-					allowSubmitForm = false;
-					$("#captcha-res").css("border-color","red")
-				}
-                return;
-            });
-}
-
 $(function()
 {
-    //var lis = $('.nav > li');
-    //menu_focus( lis[0], 1 );
-
-    //$(".fancybox").fancybox({
-    //    padding: 10,
-    //    helpers: {
-    //        overlay: {
-    //            locked: false
-    //        }
-    //    }
-    //});
     // Variable to store your files
 	var files;
 
 	// Add events
 	$('input[type=file]').on('change', prepareUpload);
 	$('#uploadform').on('submit', uploadFiles);
-	
+	$("div.lazy").lazyload({
+      effect : "fadeIn"
+ 	 });
 	// Animate
-	$("html, body").animate({ scrollTop: $(document).height()-$(window).height() },10, function(){
-		$("html, body").animate({ scrollTop: 0 }, 1500);
-	});
+	// $("html, body").animate({ scrollTop: $(document).height()-$(window).height() },10, function(){
+	// 	$("html, body").animate({ scrollTop: 0 }, 1500);
+	// });
 	
-	//getTime();
 	// Grab the files and set them to our variable
 	function prepareUpload(event)
 	{
@@ -195,24 +139,20 @@ $(function()
         event.preventDefault(); // Totally stop stuff happening
 
         // START A LOADING SPINNER HERE
-		$("#errormsg").html("<img src='images/loading.gif' />");
-		//getUploadedPercent()
+        $('#uploadprogress').css('display','block');
+        $('#download').css('display','none')
+        $('#upload_percent').html('')
         
 		// Create a formdata object and add the files
 		var data = new FormData();
 		$.each(files, function(key, value)
 		{
-			console.log(value);
 			data.append(key, value);
 		});
 		
-		captchares = $("#captcha-res").val()
-		livetime = $("#livetime").val()
-		protectedpass = $("#password").val()
-		uuid = $("#UPLOAD_IDENTIFIER").val()
-		var sid = getCookie("PHPSESSID")
-		data.append("UPLOAD_IDENTIFIER",uuid)
-		data.append("captcha-res",captchares)
+		var livetime = $("#livetime").val()
+		var protectedpass = $("#password").val()
+		var sid = getCookie("PHPSESSID")		
 		data.append("live-time",livetime)
         data.append("function","uploadfile")
 		data.append("sid",sid)
@@ -225,20 +165,26 @@ $(function()
             dataType: 'json',
             processData: false, // Don't process the files
             contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+            xhr: function() {  // Custom XMLHttpRequest
+            	var myXhr = $.ajaxSettings.xhr();
+            	if(myXhr.upload){ // Check if upload property exists
+                	myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+            	}
+            	return myXhr;
+       		},
             success: function(data, textStatus, jqXHR)
             {
             	if(typeof data.error === 'undefined')
             	{
             		// Success so call function to process the form
             		submitForm(event, data);
-					loadCaptcha()
             	}
             	else
             	{
             		// Handle errors here
             		console.log('ERRORS: ' + data.error);
 					$("#errormsg").html('ERRORS: ' + data.error)
-					loadCaptcha()
+					$('#uploadprogress').css('display','none')
             	}
             },
             error: function(jqXHR, textStatus, errorThrown)
@@ -246,8 +192,7 @@ $(function()
             	// Handle errors here
             	console.log('ERRORS: ' + textStatus);
 				$("#errormsg").html('ERRORS: Upload file failed')
-				loadCaptcha()
-            	// STOP LOADING SPINNER
+            	$('#uploadprogress').css('display','none')
             }
         });
     }
@@ -257,6 +202,9 @@ $(function()
 		// Create a jQuery object from the form
 		$form = $(event.target);
 		
+		// Done, off uploadprogress
+		$('#uploadprogress').css('display','none')
+
 		// Serialize the form data
 		var formData = $form.serialize();
 		
@@ -299,7 +247,6 @@ $(function()
             complete: function()
             {
             	// STOP LOADING SPINNER
-				loadCaptcha()
 				$("#errormsg").html('')
             }
 		});
